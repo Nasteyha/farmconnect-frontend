@@ -151,7 +151,7 @@ function Landing() {
             <span className="text-marigold">Or the will to grow?</span>
           </h2>
           <div className="flex justify-center mt-10">
-            <button className="px-8 py-4 bg-marigold text-forest rounded-full font-body font-semibold transition-colors hover:bg-sand">Get started</button>
+            <button onClick={() => navigate('/register')} className="px-8 py-4 bg-marigold text-forest rounded-full font-body font-semibold transition-colors hover:bg-sand">Get started</button>
           </div>
         </div>
       </section>

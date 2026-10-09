@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../config'
 import { saveCurrentUser, homeForRole } from '../auth'
 import type { Role } from '../auth'
@@ -85,6 +85,13 @@ function Login() {
         >
           {loading ? 'Signing in...' : 'Log in'}
         </button>
+
+        <p className="font-body text-sm text-forest/70 text-center">
+          New to FarmConnect?{' '}
+          <Link to="/register" className="text-forest font-semibold underline">
+            Create an account
+          </Link>
+        </p>
       </form>
     </div>
   )
