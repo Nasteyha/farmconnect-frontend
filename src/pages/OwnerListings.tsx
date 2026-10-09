@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../config'
-
-type Owner = {
-  id: number
-  name: string
-  email: string
-}
+import { getCurrentUser, clearCurrentUser } from '../auth'
 
 type Listing = {
   id: number
@@ -44,26 +39,14 @@ function capitalise(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-function readOwner(): Owner | null {
-  try {
-    const saved = sessionStorage.getItem('ownerUser')
-    return saved ? JSON.parse(saved) : null
-  } catch {
-    return null
-  }
-}
-
 function OwnerListings() {
   const navigate = useNavigate()
-  const [owner] = useState<Owner | null>(readOwner)
+  const [owner] = useState(getCurrentUser)
   const [listings, setListings] = useState<Listing[] | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!owner) {
-      navigate('/owner/login')
-      return
-    }
+    if (!owner) return
 
     const loadListings = async () => {
       try {
@@ -79,11 +62,11 @@ function OwnerListings() {
     }
 
     loadListings()
-  }, [owner, navigate])
+  }, [owner])
 
   const handleLogout = () => {
-    sessionStorage.removeItem('ownerUser')
-    navigate('/owner/login')
+    clearCurrentUser()
+    navigate('/login')
   }
 
   if (!owner) return null
@@ -92,9 +75,7 @@ function OwnerListings() {
     <div className="min-h-screen bg-sand">
       <nav className="bg-forest">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-5">
-          <span className="font-display text-xl text-sand">
-            FarmConnect
-          </span>
+          <span className="font-display text-xl text-sand">FarmConnect</span>
           <button
             onClick={handleLogout}
             className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
@@ -105,48 +86,29 @@ function OwnerListings() {
       </nav>
 
       <div className="max-w-6xl mx-auto px-8 py-16">
-        <h1 className="font-display text-4xl font-semibold text-forest">
-          Your listings
-        </h1>
+        <h1 className="font-display text-4xl font-semibold text-forest">Your listings</h1>
         <p className="font-body text-forest/70 mt-2">
           Signed in as {owner.name} ({owner.email})
         </p>
 
-        {error && (
-          <p className="font-body text-red-700 mt-8">{error}</p>
-        )}
+        {error && <p className="font-body text-red-700 mt-8">{error}</p>}
 
-        {!listings && !error && (
-          <p className="font-body text-forest/70 mt-8">Loading...</p>
-        )}
+        {!listings && !error && <p className="font-body text-forest/70 mt-8">Loading...</p>}
 
         {listings && listings.length === 0 && (
-          <p className="font-body text-forest/70 mt-8">
-            You have no listings yet.
-          </p>
+          <p className="font-body text-forest/70 mt-8">You have no listings yet.</p>
         )}
 
         <div className="grid grid-cols-2 gap-8 mt-10">
           {listings?.map((l) => (
-            <div
-              key={l.id}
-              className="bg-white rounded-2xl border border-forest/10 overflow-hidden"
-            >
-              <img
-                src={l.photo_url}
-                alt={l.title}
-                className="w-full h-56 object-cover bg-forest/10"
-              />
+            <div key={l.id} className="bg-white rounded-2xl border border-forest/10 overflow-hidden">
+              <img src={l.photo_url} alt={l.title} className="w-full h-56 object-cover bg-forest/10" />
               <div className="p-6 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-4">
-                  <h2 className="font-display text-2xl font-semibold text-forest">
-                    {l.title}
-                  </h2>
+                  <h2 className="font-display text-2xl font-semibold text-forest">{l.title}</h2>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-body font-semibold ${
-                      l.status === 'available'
-                        ? 'bg-forest/10 text-forest'
-                        : 'bg-marigold/20 text-forest'
+                      l.status === 'available' ? 'bg-forest/10 text-forest' : 'bg-marigold/20 text-forest'
                     }`}
                   >
                     {capitalise(l.status)}

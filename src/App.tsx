@@ -1,19 +1,39 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Landing from './pages/Landing'
-import AdminLogin from './pages/AdminLogin'
+import Login from './pages/Login'
 import AdminDashboard from './pages/AdminDashboard'
-import OwnerLogin from './pages/OwnerLogin'
 import OwnerListings from './pages/OwnerListings'
+import RequireRole from './components/RequireRole'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/owner/login" element={<OwnerLogin />} />
-        <Route path="/owner/listings" element={<OwnerListings />} />
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/admin/dashboard"
+          element={
+            <RequireRole role="admin">
+              <AdminDashboard />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="/owner/listings"
+          element={
+            <RequireRole role="landowner">
+              <OwnerListings />
+            </RequireRole>
+          }
+        />
+
+        {/* Old addresses still work, they just go to the one login page */}
+        <Route path="/admin/login" element={<Navigate to="/login" replace />} />
+        <Route path="/owner/login" element={<Navigate to="/login" replace />} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )

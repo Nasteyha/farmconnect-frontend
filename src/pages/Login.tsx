@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../config'
+import { saveCurrentUser, homeForRole } from '../auth'
+import type { Role } from '../auth'
 
-function OwnerLogin() {
+function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -19,10 +21,6 @@ function OwnerLogin() {
     }
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       setError('Please enter a valid email address')
-      return
-    }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
       return
     }
 
@@ -44,16 +42,9 @@ function OwnerLogin() {
       }
 
       const user = await response.json()
-      if (user.role !== 'landowner') {
-        setError('This login is for landowners. Growers sign in elsewhere.')
-        return
-      }
-
-      sessionStorage.setItem(
-        'ownerUser',
-        JSON.stringify({ id: user.id, name: user.name, email: user.email })
-      )
-      navigate('/owner/listings')
+      const role = user.role as Role
+      saveCurrentUser({ id: user.id, name: user.name, email: user.email, role })
+      navigate(homeForRole(role))
     } catch {
       setError('Could not reach the server. Is the backend running?')
     } finally {
@@ -67,12 +58,8 @@ function OwnerLogin() {
         onSubmit={handleLogin}
         className="w-full max-w-md bg-white rounded-2xl border border-forest/10 p-10 flex flex-col gap-5"
       >
-        <h1 className="font-display text-3xl font-semibold text-forest">
-          Landowner login
-        </h1>
-        <p className="font-body text-forest/70">
-          Sign in to manage your land listings.
-        </p>
+        <h1 className="font-display text-3xl font-semibold text-forest">Log in</h1>
+        <p className="font-body text-forest/70">Welcome back to FarmConnect.</p>
 
         <input
           type="text"
@@ -89,9 +76,7 @@ function OwnerLogin() {
           className="px-4 py-3 rounded-lg border border-forest/20 font-body text-forest focus:outline-none focus:border-marigold"
         />
 
-        {error && (
-          <p className="font-body text-sm text-red-700">{error}</p>
-        )}
+        {error && <p className="font-body text-sm text-red-700">{error}</p>}
 
         <button
           type="submit"
@@ -105,4 +90,4 @@ function OwnerLogin() {
   )
 }
 
-export default OwnerLogin
+export default Login
