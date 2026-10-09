@@ -21,9 +21,9 @@ function Landing() {
 
       <nav className="sticky top-0 z-40 backdrop-blur-md bg-sand/80 border-b border-forest/10">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-5">
-          <span className="font-[family-name:--font-display] text-2xl font-semibold text-forest">FarmConnect</span>
+          <span className="font-display text-2xl font-semibold text-forest">FarmConnect</span>
           <div className="flex gap-3">
-          <button onClick={() => navigate('/owner/login')} className="px-5 py-2 text-forest font-[family-name:--font-body] rounded-full transition-colors hover:bg-forest/5">List Land</button>            <button className="px-5 py-2 bg-forest text-sand rounded-full font-[family-name:--font-body] transition-colors hover:bg-forest/90">Find Land</button>
+          <button onClick={() => navigate('/owner/login')} className="px-5 py-2 text-forest font-body rounded-full transition-colors hover:bg-forest/5">List Land</button>            <button className="px-5 py-2 bg-forest text-sand rounded-full font-body transition-colors hover:bg-forest/90">Find Land</button>
           </div>
         </div>
       </nav>
@@ -33,7 +33,7 @@ function Landing() {
         <div className="absolute -bottom-40 -left-20 w-[32rem] h-[32rem] rounded-full bg-forest/30 blur-[100px] animate-blob -z-10" />
         <div className="max-w-6xl mx-auto grid grid-cols-2 gap-12 items-center px-8 py-28">
           <div className="flex flex-col items-start gap-6">
-            <h1 className="font-[family-name:--font-display] text-6xl font-semibold text-forest leading-[1.05]">
+            <h1 className="font-display text-6xl font-semibold text-forest leading-[1.05]">
               Idle land.
               <br />
               <span className="bg-gradient-to-r from-forest via-marigold to-forest bg-clip-text text-transparent animate-shine">
@@ -42,11 +42,11 @@ function Landing() {
               <br />
               We close the gap.
             </h1>
-            <p className="font-[family-name:--font-body] text-lg text-forest/80 max-w-md">
+            <p className="font-body text-lg text-forest/80 max-w-md">
               Nairobi has land sitting unused while people who want to grow their own food have nowhere to do it. FarmConnect connects the two directly.
             </p>
             <div className="flex gap-4">
-            <button onClick={() => navigate('/owner/login')} className="px-6 py-3 bg-forest text-sand rounded-full font-[family-name:--font-body] transition-colors hover:bg-forest/90">List your land</button>              <button className="px-6 py-3 border border-forest text-forest rounded-full font-[family-name:--font-body] transition-colors hover:bg-forest hover:text-sand">Find land to grow</button>
+            <button onClick={() => navigate('/owner/login')} className="px-6 py-3 bg-forest text-sand rounded-full font-body transition-colors hover:bg-forest/90">List your land</button>              <button className="px-6 py-3 border border-forest text-forest rounded-full font-body transition-colors hover:bg-forest hover:text-sand">Find land to grow</button>
             </div>
           </div>
           <div ref={heroParallax.ref} className="overflow-hidden rounded-2xl">
@@ -69,8 +69,8 @@ function Landing() {
             { n: '100%', l: 'Self-service' },
           ].map((s) => (
             <div key={s.l} className="flex flex-col items-start">
-              <span className="font-[family-name:--font-display] text-4xl font-semibold text-marigold">{s.n}</span>
-              <p className="font-[family-name:--font-body] text-sm text-forest/70 mt-1">{s.l}</p>
+              <span className="font-display text-4xl font-semibold text-marigold">{s.n}</span>
+              <p className="font-body text-sm text-forest/70 mt-1">{s.l}</p>
             </div>
           ))}
         </div>
@@ -88,11 +88,11 @@ function Landing() {
             />
           </div>
           <div className="flex flex-col gap-4">
-            <span className="font-[family-name:--font-body] text-sm font-semibold tracking-widest uppercase text-marigold">The gap</span>
-            <h2 className="font-[family-name:--font-display] text-4xl font-semibold text-sand leading-tight">
+            <span className="font-body text-sm font-semibold tracking-widest uppercase text-marigold">The gap</span>
+            <h2 className="font-display text-4xl font-semibold text-sand leading-tight">
               The land is there. The people who want to grow are there. They just can't find each other.
             </h2>
-            <p className="font-[family-name:--font-body] text-lg text-sand/80">
+            <p className="font-body text-lg text-sand/80">
               Across Nairobi, land sits idle while residents with no space of their own want to grow food. There's no platform built for individual landowners and small-scale growers to connect directly — until now.
             </p>
           </div>
@@ -102,8 +102,8 @@ function Landing() {
       <section ref={howItWorks.ref} className={`bg-sand transition-all duration-1000 ${howItWorks.isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-6xl mx-auto px-8 py-28">
           <div className="text-center mb-16">
-            <span className="font-[family-name:--font-body] text-sm font-semibold tracking-widest uppercase text-marigold">Process</span>
-            <h2 className="font-[family-name:--font-display] text-4xl font-semibold text-forest mt-2">How it works</h2>
+            <span className="font-body text-sm font-semibold tracking-widest uppercase text-marigold">Process</span>
+            <h2 className="font-display text-4xl font-semibold text-forest mt-2">How it works</h2>
           </div>
           <div className="grid grid-cols-3 gap-8">
             {[
@@ -112,9 +112,9 @@ function Landing() {
               { n: '03', t: 'Grow', d: 'Confirm access, and the lease period begins.' },
             ].map((s) => (
               <div key={s.n} className="p-8 rounded-2xl bg-white border border-forest/10 transition-all duration-300 hover:shadow-xl hover:shadow-forest/10 hover:-translate-y-1">
-                <span className="font-[family-name:--font-display] text-5xl font-semibold text-marigold">{s.n}</span>
-                <h3 className="font-[family-name:--font-body] font-semibold text-forest text-xl mt-4">{s.t}</h3>
-                <p className="font-[family-name:--font-body] text-forest/80 mt-2">{s.d}</p>
+                <span className="font-display text-5xl font-semibold text-marigold">{s.n}</span>
+                <h3 className="font-body font-semibold text-forest text-xl mt-4">{s.t}</h3>
+                <p className="font-body text-forest/80 mt-2">{s.d}</p>
               </div>
             ))}
           </div>
@@ -124,8 +124,8 @@ function Landing() {
       <section ref={features.ref} className={`bg-sand transition-all duration-1000 ${features.isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-6xl mx-auto px-8 pb-28">
           <div className="mb-12">
-            <span className="font-[family-name:--font-body] text-sm font-semibold tracking-widest uppercase text-marigold">Capabilities</span>
-            <h2 className="font-[family-name:--font-display] text-4xl font-semibold text-forest mt-2">What FarmConnect does</h2>
+            <span className="font-body text-sm font-semibold tracking-widest uppercase text-marigold">Capabilities</span>
+            <h2 className="font-display text-4xl font-semibold text-forest mt-2">What FarmConnect does</h2>
           </div>
           <div className="grid grid-cols-2 gap-x-16 gap-y-10">
             {[
@@ -135,8 +135,8 @@ function Landing() {
               { t: 'Verified accountability', d: 'Identity checks and reviewed land documents give both sides a baseline of trust before committing.' },
             ].map((f) => (
               <div key={f.t} className="border-t border-forest/20 pt-4 transition-all duration-300 hover:border-marigold">
-                <h3 className="font-[family-name:--font-body] font-semibold text-forest text-lg">{f.t}</h3>
-                <p className="font-[family-name:--font-body] text-forest/80 text-base mt-1">{f.d}</p>
+                <h3 className="font-body font-semibold text-forest text-lg">{f.t}</h3>
+                <p className="font-body text-forest/80 text-base mt-1">{f.d}</p>
               </div>
             ))}
           </div>
@@ -145,21 +145,21 @@ function Landing() {
 
       <section className="bg-forest">
         <div className="max-w-4xl mx-auto px-8 py-28 text-center">
-          <h2 className="font-[family-name:--font-display] text-5xl font-semibold text-sand leading-tight">
+          <h2 className="font-display text-5xl font-semibold text-sand leading-tight">
             Got idle land?
             <br />
             <span className="text-marigold">Or the will to grow?</span>
           </h2>
           <div className="flex justify-center mt-10">
-            <button className="px-8 py-4 bg-marigold text-forest rounded-full font-[family-name:--font-body] font-semibold transition-colors hover:bg-sand">Get started</button>
+            <button className="px-8 py-4 bg-marigold text-forest rounded-full font-body font-semibold transition-colors hover:bg-sand">Get started</button>
           </div>
         </div>
       </section>
 
       <footer className="bg-forest border-t border-sand/10">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-10">
-          <span className="font-[family-name:--font-display] text-lg text-sand">FarmConnect</span>
-          <p className="font-[family-name:--font-body] text-sand/80 text-sm">Supporting SDG 2 (Zero Hunger) and SDG 11 (Sustainable Cities)</p>
+          <span className="font-display text-lg text-sand">FarmConnect</span>
+          <p className="font-body text-sand/80 text-sm">Supporting SDG 2 (Zero Hunger) and SDG 11 (Sustainable Cities)</p>
         </div>
       </footer>
     </>

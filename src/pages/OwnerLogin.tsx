@@ -67,10 +67,10 @@ function OwnerLogin() {
         onSubmit={handleLogin}
         className="w-full max-w-md bg-white rounded-2xl border border-forest/10 p-10 flex flex-col gap-5"
       >
-        <h1 className="font-[family-name:--font-display] text-3xl font-semibold text-forest">
+        <h1 className="font-display text-3xl font-semibold text-forest">
           Landowner login
         </h1>
-        <p className="font-[family-name:--font-body] text-forest/70">
+        <p className="font-body text-forest/70">
           Sign in to manage your land listings.
         </p>
 
@@ -79,24 +79,24 @@ function OwnerLogin() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="px-4 py-3 rounded-lg border border-forest/20 font-[family-name:--font-body] text-forest focus:outline-none focus:border-marigold"
+          className="px-4 py-3 rounded-lg border border-forest/20 font-body text-forest focus:outline-none focus:border-marigold"
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="px-4 py-3 rounded-lg border border-forest/20 font-[family-name:--font-body] text-forest focus:outline-none focus:border-marigold"
+          className="px-4 py-3 rounded-lg border border-forest/20 font-body text-forest focus:outline-none focus:border-marigold"
         />
 
         {error && (
-          <p className="font-[family-name:--font-body] text-sm text-red-700">{error}</p>
+          <p className="font-body text-sm text-red-700">{error}</p>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-3 bg-forest text-sand rounded-full font-[family-name:--font-body] font-semibold transition-colors hover:bg-forest/90 disabled:opacity-60"
+          className="px-6 py-3 bg-forest text-sand rounded-full font-body font-semibold transition-colors hover:bg-forest/90 disabled:opacity-60"
         >
           {loading ? 'Signing in...' : 'Log in'}
         </button>

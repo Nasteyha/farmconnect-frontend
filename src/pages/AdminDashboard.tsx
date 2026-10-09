@@ -54,12 +54,12 @@ function AdminDashboard() {
     <div className="min-h-screen bg-sand">
       <nav className="bg-forest">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-5">
-          <span className="font-[family-name:--font-display] text-xl text-sand">
+          <span className="font-display text-xl text-sand">
             FarmConnect Admin
           </span>
           <button
             onClick={handleLogout}
-            className="px-5 py-2 text-sand border border-sand/40 rounded-full font-[family-name:--font-body] transition-colors hover:bg-sand/10"
+            className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
           >
             Log out
           </button>
@@ -67,19 +67,19 @@ function AdminDashboard() {
       </nav>
 
       <div className="max-w-6xl mx-auto px-8 py-16">
-        <h1 className="font-[family-name:--font-display] text-4xl font-semibold text-forest">
+        <h1 className="font-display text-4xl font-semibold text-forest">
           Dashboard
         </h1>
-        <p className="font-[family-name:--font-body] text-forest/70 mt-2">
+        <p className="font-body text-forest/70 mt-2">
           Live counts from the FarmConnect database.
         </p>
 
         {error && (
-          <p className="font-[family-name:--font-body] text-red-700 mt-8">{error}</p>
+          <p className="font-body text-red-700 mt-8">{error}</p>
         )}
 
         {!stats && !error && (
-          <p className="font-[family-name:--font-body] text-forest/70 mt-8">Loading...</p>
+          <p className="font-body text-forest/70 mt-8">Loading...</p>
         )}
 
         <div className="grid grid-cols-3 gap-8 mt-10">
@@ -88,8 +88,8 @@ function AdminDashboard() {
               key={c.label}
               className="bg-white rounded-2xl border border-forest/10 p-8 transition-all duration-300 hover:shadow-xl hover:shadow-forest/10 hover:-translate-y-1"
             >
-              <p className="font-[family-name:--font-body] text-sm text-forest/60">{c.label}</p>
-              <p className="font-[family-name:--font-display] text-5xl font-semibold text-marigold mt-2">
+              <p className="font-body text-sm text-forest/60">{c.label}</p>
+              <p className="font-display text-5xl font-semibold text-marigold mt-2">
                 {c.value}
               </p>
             </div>

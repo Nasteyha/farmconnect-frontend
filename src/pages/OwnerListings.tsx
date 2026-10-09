@@ -92,12 +92,12 @@ function OwnerListings() {
     <div className="min-h-screen bg-sand">
       <nav className="bg-forest">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-5">
-          <span className="font-[family-name:--font-display] text-xl text-sand">
+          <span className="font-display text-xl text-sand">
             FarmConnect
           </span>
           <button
             onClick={handleLogout}
-            className="px-5 py-2 text-sand border border-sand/40 rounded-full font-[family-name:--font-body] transition-colors hover:bg-sand/10"
+            className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
           >
             Log out
           </button>
@@ -105,23 +105,23 @@ function OwnerListings() {
       </nav>
 
       <div className="max-w-6xl mx-auto px-8 py-16">
-        <h1 className="font-[family-name:--font-display] text-4xl font-semibold text-forest">
+        <h1 className="font-display text-4xl font-semibold text-forest">
           Your listings
         </h1>
-        <p className="font-[family-name:--font-body] text-forest/70 mt-2">
+        <p className="font-body text-forest/70 mt-2">
           Signed in as {owner.name} ({owner.email})
         </p>
 
         {error && (
-          <p className="font-[family-name:--font-body] text-red-700 mt-8">{error}</p>
+          <p className="font-body text-red-700 mt-8">{error}</p>
         )}
 
         {!listings && !error && (
-          <p className="font-[family-name:--font-body] text-forest/70 mt-8">Loading...</p>
+          <p className="font-body text-forest/70 mt-8">Loading...</p>
         )}
 
         {listings && listings.length === 0 && (
-          <p className="font-[family-name:--font-body] text-forest/70 mt-8">
+          <p className="font-body text-forest/70 mt-8">
             You have no listings yet.
           </p>
         )}
@@ -139,11 +139,11 @@ function OwnerListings() {
               />
               <div className="p-6 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-4">
-                  <h2 className="font-[family-name:--font-display] text-2xl font-semibold text-forest">
+                  <h2 className="font-display text-2xl font-semibold text-forest">
                     {l.title}
                   </h2>
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-[family-name:--font-body] font-semibold ${
+                    className={`px-3 py-1 rounded-full text-sm font-body font-semibold ${
                       l.status === 'available'
                         ? 'bg-forest/10 text-forest'
                         : 'bg-marigold/20 text-forest'
@@ -152,8 +152,8 @@ function OwnerListings() {
                     {capitalise(l.status)}
                   </span>
                 </div>
-                <p className="font-[family-name:--font-body] text-forest/70">{l.location_name}</p>
-                <div className="grid grid-cols-2 gap-4 font-[family-name:--font-body] text-forest">
+                <p className="font-body text-forest/70">{l.location_name}</p>
+                <div className="grid grid-cols-2 gap-4 font-body text-forest">
                   <div>
                     <p className="text-sm text-forest/60">Size</p>
                     <p className="font-semibold">{l.size_acres} acres</p>
@@ -163,7 +163,7 @@ function OwnerListings() {
                     <p className="font-semibold">{formatPrice(l)}</p>
                   </div>
                 </div>
-                <div className="font-[family-name:--font-body] text-forest">
+                <div className="font-body text-forest">
                   <p className="text-sm text-forest/60">Available</p>
                   <p className="font-semibold">
                     {formatDate(l.availability_start)} to {formatDate(l.availability_end)}
