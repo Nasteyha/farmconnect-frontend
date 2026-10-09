@@ -5,6 +5,7 @@ import Register from './pages/Register'
 import AdminDashboard from './pages/AdminDashboard'
 import OwnerListings from './pages/OwnerListings'
 import AddListing from './pages/AddListing'
+import GrowerBrowse from './pages/GrowerBrowse'
 import RequireRole from './components/RequireRole'
 
 function App() {
@@ -36,6 +37,14 @@ function App() {
           element={
             <RequireRole role="landowner">
               <AddListing />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="/grower/browse"
+          element={
+            <RequireRole role="grower">
+              <GrowerBrowse />
             </RequireRole>
           }
         />

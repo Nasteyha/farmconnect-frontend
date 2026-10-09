@@ -23,7 +23,7 @@ function Landing() {
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-5">
           <span className="font-display text-2xl font-semibold text-forest">FarmConnect</span>
           <div className="flex gap-3">
-          <button onClick={() => navigate('/owner/login')} className="px-5 py-2 text-forest font-body rounded-full transition-colors hover:bg-forest/5">List Land</button>            <button className="px-5 py-2 bg-forest text-sand rounded-full font-body transition-colors hover:bg-forest/90">Find Land</button>
+          <button onClick={() => navigate('/owner/login')} className="px-5 py-2 text-forest font-body rounded-full transition-colors hover:bg-forest/5">List Land</button>            <button onClick={() => navigate('/grower/browse')} className="px-5 py-2 bg-forest text-sand rounded-full font-body transition-colors hover:bg-forest/90">Find Land</button>
           </div>
         </div>
       </nav>
@@ -46,7 +46,7 @@ function Landing() {
               Nairobi has land sitting unused while people who want to grow their own food have nowhere to do it. FarmConnect connects the two directly.
             </p>
             <div className="flex gap-4">
-            <button onClick={() => navigate('/owner/login')} className="px-6 py-3 bg-forest text-sand rounded-full font-body transition-colors hover:bg-forest/90">List your land</button>              <button className="px-6 py-3 border border-forest text-forest rounded-full font-body transition-colors hover:bg-forest hover:text-sand">Find land to grow</button>
+            <button onClick={() => navigate('/owner/login')} className="px-6 py-3 bg-forest text-sand rounded-full font-body transition-colors hover:bg-forest/90">List your land</button>              <button onClick={() => navigate('/grower/browse')} className="px-6 py-3 border border-forest text-forest rounded-full font-body transition-colors hover:bg-forest hover:text-sand">Find land to grow</button>
             </div>
           </div>
           <div ref={heroParallax.ref} className="overflow-hidden rounded-2xl">
