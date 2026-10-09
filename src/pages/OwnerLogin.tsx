@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const MOCK_EMAIL = 'nasteha1@gmail.com'
-const MOCK_PASSWORD = 'test1234'
+import { API_URL } from '../config'
 
 function OwnerLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
@@ -26,11 +25,39 @@ function OwnerLogin() {
       setError('Password must be at least 6 characters')
       return
     }
-    if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
-      sessionStorage.setItem('ownerLoggedIn', 'true')
+
+    setLoading(true)
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), password }),
+      })
+
+      if (response.status === 401) {
+        setError('Incorrect email or password')
+        return
+      }
+      if (!response.ok) {
+        setError('Something went wrong. Please try again.')
+        return
+      }
+
+      const user = await response.json()
+      if (user.role !== 'landowner') {
+        setError('This login is for landowners. Growers sign in elsewhere.')
+        return
+      }
+
+      sessionStorage.setItem(
+        'ownerUser',
+        JSON.stringify({ id: user.id, name: user.name, email: user.email })
+      )
       navigate('/owner/listings')
-    } else {
-      setError('Incorrect email or password')
+    } catch {
+      setError('Could not reach the server. Is the backend running?')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -68,12 +95,11 @@ function OwnerLogin() {
 
         <button
           type="submit"
-          className="px-6 py-3 bg-forest text-sand rounded-full font-[family-name:--font-body] font-semibold transition-colors hover:bg-forest/90"
+          disabled={loading}
+          className="px-6 py-3 bg-forest text-sand rounded-full font-[family-name:--font-body] font-semibold transition-colors hover:bg-forest/90 disabled:opacity-60"
         >
-          Log in
+          {loading ? 'Signing in...' : 'Log in'}
         </button>
-
-        
       </form>
     </div>
   )

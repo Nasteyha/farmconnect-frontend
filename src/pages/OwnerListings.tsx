@@ -1,48 +1,92 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_URL } from '../config'
 
-const owner = { name: 'Nasteho Farah', email: 'nasteha1@gmail.com' }
+type Owner = {
+  id: number
+  name: string
+  email: string
+}
 
-const listings = [
-  {
-    id: 1,
-    photo:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrZKxheZ56xmOzoyd0wM5H3RNuCWV2UuckUtGuZQs1Bw&s=10',
-    title: 'Established backyard vegetable plot',
-    location: 'Nairobi County',
-    size: '0.5 acres',
-    price: 'KSh 10,000 / month',
-    priceType: 'Fixed price',
-    availability: '1 Nov 2026 to 1 Feb 2027',
-    status: 'Available',
-  },
-  {
-    id: 2,
-    photo:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbhf-0AdnYZZKwiHbC4Ap2UnHb9wSN8clPT60qqq9pNw&s=10',
-    title: 'Productive vegetable plot with greenhouse',
-    location: 'Nairobi County',
-    size: '0.25 acres',
-    price: '20% of harvest',
-    priceType: 'Harvest share',
-    availability: '1 Dec 2026 to 1 Mar 2027',
-    status: 'Reserved',
-  },
-]
+type Listing = {
+  id: number
+  title: string
+  location_name: string
+  photo_url: string
+  size_acres: number
+  price_type: 'fixed' | 'negotiable' | 'harvest_share'
+  price_value: number
+  availability_start: string
+  availability_end: string
+  status: string
+}
+
+function formatPrice(l: Listing) {
+  if (l.price_type === 'harvest_share') return `${l.price_value}% of harvest`
+  return `KSh ${l.price_value.toLocaleString()} / month`
+}
+
+function priceLabel(type: Listing['price_type']) {
+  if (type === 'fixed') return 'Fixed price'
+  if (type === 'negotiable') return 'Negotiable'
+  return 'Harvest share'
+}
+
+function formatDate(iso: string) {
+  return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
+function capitalise(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+function readOwner(): Owner | null {
+  try {
+    const saved = sessionStorage.getItem('ownerUser')
+    return saved ? JSON.parse(saved) : null
+  } catch {
+    return null
+  }
+}
 
 function OwnerListings() {
   const navigate = useNavigate()
+  const [owner] = useState<Owner | null>(readOwner)
+  const [listings, setListings] = useState<Listing[] | null>(null)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    if (sessionStorage.getItem('ownerLoggedIn') !== 'true') {
+    if (!owner) {
       navigate('/owner/login')
+      return
     }
-  }, [navigate])
+
+    const loadListings = async () => {
+      try {
+        const response = await fetch(`${API_URL}/listings?owner_id=${owner.id}`)
+        if (!response.ok) {
+          setError('Could not load your listings')
+          return
+        }
+        setListings(await response.json())
+      } catch {
+        setError('Could not reach the server. Is the backend running?')
+      }
+    }
+
+    loadListings()
+  }, [owner, navigate])
 
   const handleLogout = () => {
-    sessionStorage.removeItem('ownerLoggedIn')
+    sessionStorage.removeItem('ownerUser')
     navigate('/owner/login')
   }
+
+  if (!owner) return null
 
   return (
     <div className="min-h-screen bg-sand">
@@ -67,18 +111,31 @@ function OwnerListings() {
         <p className="font-[family-name:--font-body] text-forest/70 mt-2">
           Signed in as {owner.name} ({owner.email})
         </p>
-        
+
+        {error && (
+          <p className="font-[family-name:--font-body] text-red-700 mt-8">{error}</p>
+        )}
+
+        {!listings && !error && (
+          <p className="font-[family-name:--font-body] text-forest/70 mt-8">Loading...</p>
+        )}
+
+        {listings && listings.length === 0 && (
+          <p className="font-[family-name:--font-body] text-forest/70 mt-8">
+            You have no listings yet.
+          </p>
+        )}
 
         <div className="grid grid-cols-2 gap-8 mt-10">
-          {listings.map((l) => (
+          {listings?.map((l) => (
             <div
               key={l.id}
               className="bg-white rounded-2xl border border-forest/10 overflow-hidden"
             >
               <img
-                src={l.photo}
-                alt="Sample land listing"
-                className="w-full h-56 object-cover"
+                src={l.photo_url}
+                alt={l.title}
+                className="w-full h-56 object-cover bg-forest/10"
               />
               <div className="p-6 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-4">
@@ -87,28 +144,30 @@ function OwnerListings() {
                   </h2>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-[family-name:--font-body] font-semibold ${
-                      l.status === 'Available'
+                      l.status === 'available'
                         ? 'bg-forest/10 text-forest'
                         : 'bg-marigold/20 text-forest'
                     }`}
                   >
-                    {l.status}
+                    {capitalise(l.status)}
                   </span>
                 </div>
-                <p className="font-[family-name:--font-body] text-forest/70">{l.location}</p>
+                <p className="font-[family-name:--font-body] text-forest/70">{l.location_name}</p>
                 <div className="grid grid-cols-2 gap-4 font-[family-name:--font-body] text-forest">
                   <div>
                     <p className="text-sm text-forest/60">Size</p>
-                    <p className="font-semibold">{l.size}</p>
+                    <p className="font-semibold">{l.size_acres} acres</p>
                   </div>
                   <div>
-                    <p className="text-sm text-forest/60">{l.priceType}</p>
-                    <p className="font-semibold">{l.price}</p>
+                    <p className="text-sm text-forest/60">{priceLabel(l.price_type)}</p>
+                    <p className="font-semibold">{formatPrice(l)}</p>
                   </div>
                 </div>
                 <div className="font-[family-name:--font-body] text-forest">
                   <p className="text-sm text-forest/60">Available</p>
-                  <p className="font-semibold">{l.availability}</p>
+                  <p className="font-semibold">
+                    {formatDate(l.availability_start)} to {formatDate(l.availability_end)}
+                  </p>
                 </div>
               </div>
             </div>
