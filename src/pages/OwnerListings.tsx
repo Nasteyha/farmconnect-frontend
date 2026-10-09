@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../config'
 import { getCurrentUser, clearCurrentUser } from '../auth'
 
@@ -86,17 +86,33 @@ function OwnerListings() {
       </nav>
 
       <div className="max-w-6xl mx-auto px-8 py-16">
-        <h1 className="font-display text-4xl font-semibold text-forest">Your listings</h1>
-        <p className="font-body text-forest/70 mt-2">
-          Signed in as {owner.name} ({owner.email})
-        </p>
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h1 className="font-display text-4xl font-semibold text-forest">Your listings</h1>
+            <p className="font-body text-forest/70 mt-2">
+              Signed in as {owner.name} ({owner.email})
+            </p>
+          </div>
+          <Link
+            to="/owner/listings/new"
+            className="px-6 py-3 bg-forest text-sand rounded-full font-body font-semibold transition-colors hover:bg-forest/90"
+          >
+            Add listing
+          </Link>
+        </div>
 
         {error && <p className="font-body text-red-700 mt-8">{error}</p>}
 
         {!listings && !error && <p className="font-body text-forest/70 mt-8">Loading...</p>}
 
         {listings && listings.length === 0 && (
-          <p className="font-body text-forest/70 mt-8">You have no listings yet.</p>
+          <p className="font-body text-forest/70 mt-8">
+            You have no listings yet.{' '}
+            <Link to="/owner/listings/new" className="text-forest font-semibold underline">
+              Add your first one
+            </Link>
+            .
+          </p>
         )}
 
         <div className="grid grid-cols-2 gap-8 mt-10">

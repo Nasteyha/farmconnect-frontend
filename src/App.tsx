@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import AdminDashboard from './pages/AdminDashboard'
 import OwnerListings from './pages/OwnerListings'
+import AddListing from './pages/AddListing'
 import RequireRole from './components/RequireRole'
 
 function App() {
@@ -27,6 +28,14 @@ function App() {
           element={
             <RequireRole role="landowner">
               <OwnerListings />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="/owner/listings/new"
+          element={
+            <RequireRole role="landowner">
+              <AddListing />
             </RequireRole>
           }
         />
