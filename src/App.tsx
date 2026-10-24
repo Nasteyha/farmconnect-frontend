@@ -8,6 +8,8 @@ import AddListing from './pages/AddListing'
 import GrowerBrowse from './pages/GrowerBrowse'
 import Verification from './pages/Verification'
 import RequireRole from './components/RequireRole'
+import ListingDetail from './pages/Listingdetail'
+import Requests from './pages/Requests'
 
 function App() {
   return (
@@ -57,7 +59,24 @@ function App() {
             </RequireRole>
           }
         />
-
+        
+        <Route
+          path="/grower/listings/:id"
+          element={
+            <RequireRole role="grower">
+              <ListingDetail />
+            </RequireRole>
+          }
+        />
+        
+        <Route
+          path="/requests"
+          element={
+            <RequireRole role={['landowner', 'grower']}>
+              <Requests />
+            </RequireRole>
+          }
+        />
         <Route
           path="/verification"
           element={

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../config'
 import { getCurrentUser, clearCurrentUser, authHeaders } from '../auth'
-
+import RequestsLink from '../components/RequestsLink'
 type Listing = {
   id: number
   title: string
@@ -104,6 +104,14 @@ function OwnerListings() {
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-5">
           <span className="font-display text-xl text-sand">FarmConnect</span>
           <div className="flex items-center gap-3">
+            <Link
+              to="/requests"
+              className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
+            >
+              Requests
+            </Link>
+
+          
             <Link
               to="/verification"
               className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"

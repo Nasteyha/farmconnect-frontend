@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../config'
 import { getCurrentUser, clearCurrentUser } from '../auth'
+import RequestsLink from '../components/RequestsLink'
 
 type PriceType = 'fixed' | 'negotiable' | 'harvest_share'
 
@@ -102,6 +103,15 @@ function GrowerBrowse() {
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-5">
           <span className="font-display text-xl text-sand">FarmConnect</span>
           <div className="flex items-center gap-3">
+            
+            <Link
+              to="/requests"
+              className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
+            >
+              Requests
+            </Link>
+
+            
             <Link
               to="/verification"
               className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
@@ -153,12 +163,16 @@ function GrowerBrowse() {
 
         <div className="grid grid-cols-2 gap-8 mt-10">
           {visible.map((l) => (
-            <div key={l.id} className="bg-white rounded-2xl border border-forest/10 overflow-hidden">
+            <Link
+              key={l.id}
+              to={`/grower/listings/${l.id}`}
+              className="block bg-white rounded-2xl border border-forest/10 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-forest/10 hover:-translate-y-1"
+            >
               <img src={l.photo_url} alt={l.title} className="w-full h-56 object-cover bg-forest/10" />
               <div className="p-6 flex flex-col gap-3">
                 <h2 className="font-display text-2xl font-semibold text-forest">{l.title}</h2>
                 <p className="font-body text-forest/70">{l.location_name}</p>
-                {l.description && <p className="font-body text-forest/80">{l.description}</p>}
+                {l.description && <p className="font-body text-forest/80 line-clamp-2">{l.description}</p>}
 
                 <div className="grid grid-cols-2 gap-4 font-body text-forest">
                   <div>
@@ -197,8 +211,9 @@ function GrowerBrowse() {
                     {formatDate(l.availability_start)} to {formatDate(l.availability_end)}
                   </p>
                 </div>
+                <p className="font-body text-sm font-semibold text-forest underline">View details</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
