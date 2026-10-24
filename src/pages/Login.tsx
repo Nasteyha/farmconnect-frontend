@@ -43,7 +43,7 @@ function Login() {
 
       const user = await response.json()
       const role = user.role as Role
-      saveCurrentUser({ id: user.id, name: user.name, email: user.email, role })
+      saveCurrentUser({ id: user.id, name: user.name, email: user.email, role, token: user.access_token })
       navigate(homeForRole(role))
     } catch {
       setError('Could not reach the server. Is the backend running?')

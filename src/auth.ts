@@ -5,6 +5,7 @@ export type CurrentUser = {
   name: string
   email: string
   role: Role
+  token: string
 }
 
 const KEY = 'currentUser'
@@ -20,6 +21,8 @@ export function getCurrentUser(): CurrentUser | null {
     if (!saved) return null
     const user = JSON.parse(saved)
     if (typeof user.id !== 'number' || !ROLES.includes(user.role)) return null
+    // Sessions saved before tokens existed have no token, so make them log in again
+    if (typeof user.token !== 'string' || !user.token) return null
     return user as CurrentUser
   } catch {
     return null
@@ -28,6 +31,12 @@ export function getCurrentUser(): CurrentUser | null {
 
 export function clearCurrentUser() {
   sessionStorage.removeItem(KEY)
+}
+
+// The header that proves who we are on protected API calls
+export function authHeaders(): Record<string, string> {
+  const user = getCurrentUser()
+  return user ? { Authorization: `Bearer ${user.token}` } : {}
 }
 
 // Where each role lands after login

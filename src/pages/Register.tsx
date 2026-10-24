@@ -98,7 +98,13 @@ function Register() {
 
       const user = await loggedIn.json()
       const userRole = user.role as Role
-      saveCurrentUser({ id: user.id, name: user.name, email: user.email, role: userRole })
+      saveCurrentUser({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: userRole,
+        token: user.access_token,
+      })
       navigate(homeForRole(userRole))
     } catch {
       setError('Could not reach the server. Is the backend running?')

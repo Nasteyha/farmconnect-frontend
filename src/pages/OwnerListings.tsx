@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../config'
-import { getCurrentUser, clearCurrentUser } from '../auth'
+import { getCurrentUser, clearCurrentUser, authHeaders } from '../auth'
 
 type Listing = {
   id: number
@@ -44,6 +44,7 @@ function OwnerListings() {
   const [owner] = useState(getCurrentUser)
   const [listings, setListings] = useState<Listing[] | null>(null)
   const [error, setError] = useState('')
+  const [confirmingId, setConfirmingId] = useState<number | null>(null) // listing waiting for "Yes, delete"
 
   useEffect(() => {
     if (!owner) return
@@ -64,6 +65,32 @@ function OwnerListings() {
     loadListings()
   }, [owner])
 
+  const handleDelete = async (id: number) => {
+    setError('')
+    try {
+      const response = await fetch(`${API_URL}/listings/${id}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      })
+      if (response.status === 401) {
+        clearCurrentUser()
+        navigate('/login')
+        return
+      }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}))
+        setError(typeof body.detail === 'string' ? body.detail : 'Could not delete the listing')
+        setConfirmingId(null)
+        return
+      }
+      // Remove it from the screen without reloading the page
+      setListings((current) => (current ? current.filter((l) => l.id !== id) : current))
+      setConfirmingId(null)
+    } catch {
+      setError('Could not reach the server. Is the backend running?')
+    }
+  }
+
   const handleLogout = () => {
     clearCurrentUser()
     navigate('/login')
@@ -76,12 +103,20 @@ function OwnerListings() {
       <nav className="bg-forest">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-8 py-5">
           <span className="font-display text-xl text-sand">FarmConnect</span>
-          <button
-            onClick={handleLogout}
-            className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
-          >
-            Log out
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/verification"
+              className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
+            >
+              Verification
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="px-5 py-2 text-sand border border-sand/40 rounded-full font-body transition-colors hover:bg-sand/10"
+            >
+              Log out
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -147,6 +182,47 @@ function OwnerListings() {
                     {formatDate(l.availability_start)} to {formatDate(l.availability_end)}
                   </p>
                 </div>
+
+                {l.status === 'available' ? (
+                  <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-forest/10">
+                    {confirmingId === l.id ? (
+                      <>
+                        <span className="font-body text-sm text-forest mr-auto">Delete this listing for good?</span>
+                        <button
+                          onClick={() => handleDelete(l.id)}
+                          className="px-4 py-2 rounded-full bg-red-700 text-white font-body text-sm hover:bg-red-800"
+                        >
+                          Yes, delete
+                        </button>
+                        <button
+                          onClick={() => setConfirmingId(null)}
+                          className="px-4 py-2 rounded-full border border-forest/30 text-forest font-body text-sm hover:bg-forest/5"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          to={`/owner/listings/${l.id}/edit`}
+                          className="px-4 py-2 rounded-full border border-forest/30 text-forest font-body text-sm hover:bg-forest/5"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => setConfirmingId(l.id)}
+                          className="px-4 py-2 rounded-full border border-red-300 text-red-700 font-body text-sm hover:bg-red-50"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <p className="font-body text-sm text-forest/60 pt-2 border-t border-forest/10">
+                    Only available listings can be edited or deleted.
+                  </p>
+                )}
               </div>
             </div>
           ))}

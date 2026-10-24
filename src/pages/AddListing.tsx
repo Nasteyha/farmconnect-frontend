@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API_URL } from '../config'
-import { getCurrentUser } from '../auth'
+import { getCurrentUser, clearCurrentUser, authHeaders } from '../auth'
 
 type PriceType = 'fixed' | 'negotiable' | 'harvest_share'
 
@@ -16,6 +16,8 @@ function readError(detail: unknown): string {
 
 function AddListing() {
   const navigate = useNavigate()
+  const { id } = useParams() // present on /owner/listings/:id/edit, missing on /owner/listings/new
+  const editing = id !== undefined
   const [owner] = useState(getCurrentUser)
 
   const [title, setTitle] = useState('')
@@ -34,6 +36,54 @@ function AddListing() {
   const [end, setEnd] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingListing, setLoadingListing] = useState(editing)
+  const [blocked, setBlocked] = useState('') // why this listing can't be edited
+
+  // Edit mode: fetch the listing and fill the form with its current values
+  useEffect(() => {
+    if (!editing) return
+    const loadListing = async () => {
+      try {
+        const response = await fetch(`${API_URL}/listings/${id}`)
+        if (response.status === 404) {
+          setBlocked('This listing does not exist.')
+          return
+        }
+        if (!response.ok) {
+          setBlocked('Could not load this listing.')
+          return
+        }
+        const l = await response.json()
+        if (l.owner_id !== owner?.id) {
+          setBlocked('This is not your listing.')
+          return
+        }
+        if (l.status !== 'available') {
+          setBlocked('Only available listings can be edited.')
+          return
+        }
+        setTitle(l.title)
+        setLocationName(l.location_name)
+        setDescription(l.description ?? '')
+        setLat(String(l.location_lat))
+        setLng(String(l.location_lng))
+        setSize(String(l.size_acres))
+        setPhotoUrl(l.photo_url)
+        setWater(l.water_availability ?? '')
+        setSunlight(l.sunlight ?? '')
+        setSoil(l.soil_info ?? '')
+        setPriceType(l.price_type)
+        setPriceValue(String(l.price_value))
+        setStart(l.availability_start)
+        setEnd(l.availability_end)
+      } catch {
+        setBlocked('Could not reach the server. Is the backend running?')
+      } finally {
+        setLoadingListing(false)
+      }
+    }
+    loadListing()
+  }, [editing, id, owner?.id])
 
   if (!owner) return null
 
@@ -91,11 +141,11 @@ function AddListing() {
 
     setLoading(true)
     try {
-      const response = await fetch(`${API_URL}/listings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // Same form, two jobs: PUT changes an existing listing, POST creates a new one
+      const response = await fetch(editing ? `${API_URL}/listings/${id}` : `${API_URL}/listings`, {
+        method: editing ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({
-          owner_id: owner.id,
           title: title.trim(),
           location_name: locationName.trim(),
           description: description.trim() || null,
@@ -113,6 +163,11 @@ function AddListing() {
         }),
       })
 
+      if (response.status === 401) {
+        clearCurrentUser()
+        navigate('/login')
+        return
+      }
       if (!response.ok) {
         const body = await response.json().catch(() => ({}))
         setError(readError(body.detail))
@@ -159,10 +214,26 @@ function AddListing() {
         </div>
       </nav>
 
+      {loadingListing && <p className="max-w-2xl mx-auto px-8 py-16 font-body text-forest/70">Loading...</p>}
+
+      {blocked && (
+        <div className="max-w-2xl mx-auto px-8 py-16">
+          <p className="font-body text-red-700">{blocked}</p>
+          <Link to="/owner/listings" className="font-body text-forest font-semibold underline">
+            Back to your listings
+          </Link>
+        </div>
+      )}
+
+      {!loadingListing && !blocked && (
       <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-8 py-16 flex flex-col gap-6">
         <div>
-          <h1 className="font-display text-4xl font-semibold text-forest">Add a listing</h1>
-          <p className="font-body text-forest/70 mt-2">Tell growers about your land.</p>
+          <h1 className="font-display text-4xl font-semibold text-forest">
+            {editing ? 'Edit listing' : 'Add a listing'}
+          </h1>
+          <p className="font-body text-forest/70 mt-2">
+            {editing ? 'Change any detail, then save.' : 'Tell growers about your land.'}
+          </p>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -265,9 +336,10 @@ function AddListing() {
           disabled={loading}
           className="px-6 py-3 bg-forest text-sand rounded-full font-body font-semibold transition-colors hover:bg-forest/90 disabled:opacity-60"
         >
-          {loading ? 'Saving...' : 'Create listing'}
+          {loading ? 'Saving...' : editing ? 'Save changes' : 'Create listing'}
         </button>
       </form>
+      )}
     </div>
   )
 }
