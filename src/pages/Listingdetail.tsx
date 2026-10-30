@@ -4,6 +4,7 @@ import { API_URL } from '../config'
 import { getCurrentUser } from '../auth'
 import RequestPlotForm from '../components/RequestPlotForm'
 import RequestsLink from '../components/RequestsLink'
+import CropAssistant from '../components/CropAssistant'
 
 type PriceType = 'fixed' | 'negotiable' | 'harvest_share'
 
@@ -11,6 +12,8 @@ type Detail = {
   id: number
   title: string
   location_name: string
+  location_lat: number
+  location_lng: number
   description: string | null
   photo_url: string
   size_acres: number
@@ -114,6 +117,8 @@ function ListingDetail() {
 
         {listing && !sentRequest && (
           <>
+            <CropAssistant listingId={listing.id} />
+
             <img
               src={listing.photo_url}
               alt={listing.title}
@@ -124,6 +129,14 @@ function ListingDetail() {
               <div>
                 <h1 className="font-display text-4xl font-semibold text-forest">{listing.title}</h1>
                 <p className="font-body text-lg text-forest/70 mt-1">{listing.location_name}</p>
+                <a
+                  href={`https://www.google.com/maps?q=${listing.location_lat},${listing.location_lng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block font-body text-sm font-semibold text-forest underline mt-1"
+                >
+                  View on Google Maps
+                </a>
               </div>
               <span
                 className={`px-4 py-1 rounded-full text-sm font-body font-semibold ${
